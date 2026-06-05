@@ -11,7 +11,7 @@ Ingen installation, byggkedja eller server krävs. Spelet använder vanlig HTML,
 ## Filer
 
 - `index.html` - sidstruktur, låtval, svårighet, HUD, spelcanvas och resultatpanel.
-- `style.css` - Björn-inspirerad layout, färger, knappar och paneler.
+- `style.css` - Björn-inspirerad layout, färger, knappar, paneler och mobil/ipad-anpassning.
 - `script.js` - låtval, fullängds-beatmaps, spel-loop, input, scoring, WAV-uppspelning, fallback-metronom och canvas-ritning.
 - `graph.png` - asset sheet som används som källa för spelets grafik.
 - `sprites/` - transparenta PNG-utklipp från `graph.png` för logo, Björn, noter och ikoner.
@@ -24,7 +24,13 @@ Ingen installation, byggkedja eller server krävs. Spelet använder vanlig HTML,
 - `J` - turkos not / kant-träff.
 - `Space` - startar låten när spelet inte körs.
 
-Det finns också två stora knappar under spelbanan för klick/touch-testning.
+Det finns också två stora touchknappar under spelbanan:
+
+- Röd knapp - mittslag.
+- Turkos knapp - kantslag.
+
+På mobil och iPad ligger knapparna större och nära nederkanten för att vara lättare att spela på.
+På touch-enheter är spelet anpassat för liggande läge. I stående läge visas en uppmaning att vända skärmen.
 
 ## Vad som är färdigt
 
@@ -38,6 +44,8 @@ Det finns också två stora knappar under spelbanan för klick/touch-testning.
 - Timing-feedback: `Perfect`, `Good` och `Miss`.
 - Score, combo, max combo och missräkning.
 - Resultatruta efter låten.
+- Touchkontroller för telefon och iPad.
+- Liggande mobil/ipad-layout med stor spelbana och F/J-knappar på varsin sida av skärmen.
 - WAV-uppspelning för vald låt.
 - Metronomfallback och enkla slagljud via Web Audio API.
 - Ny Björn-baserad färgpalett, bakgrund, HUD, progressbar och sprite-baserad canvasgrafik från `graph.png`.

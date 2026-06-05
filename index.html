@@ -2,7 +2,7 @@
 <html lang="sv">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Björn Rhythm Tap</title>
     <link rel="stylesheet" href="style.css">
   </head>
@@ -11,7 +11,7 @@
       <section class="hero">
         <div class="hero-copy">
           <p class="eyebrow">Björn-baserat rytmspel demo</p>
-          <img class="game-logo" src="sprites/logo.png?v=graph-clean-2" alt="Björn Rhythm Tap">
+          <img class="game-logo" src="sprites/logo.png?v=mobile-touch-1" alt="Björn Rhythm Tap">
           <p class="tagline">Spela Björn Tune. F är röd mitt-träff, J är turkos kant-träff.</p>
         </div>
         <div class="hero-actions">
@@ -61,7 +61,7 @@
       </section>
 
       <section class="stage-wrap" aria-label="Spelvy">
-        <canvas id="gameCanvas" width="1100" height="430"></canvas>
+        <canvas id="gameCanvas" width="1100" height="460"></canvas>
         <article class="panel results-panel" id="resultsPanel" hidden>
           <h2>Resultat</h2>
           <dl>
@@ -93,6 +93,13 @@
       </section>
     </main>
 
-    <script src="script.js?v=graph-clean-3"></script>
+    <aside class="rotate-overlay" aria-hidden="true">
+      <div>
+        <strong>Vänd skärmen</strong>
+        <span>Björn Rhythm Tap spelas bäst i liggande läge på mobil och iPad.</span>
+      </div>
+    </aside>
+
+    <script src="script.js?v=landscape-touch-1"></script>
   </body>
 </html>

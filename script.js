@@ -18,8 +18,9 @@ const finalMissesEl = document.getElementById("finalMisses");
 const resultMessageEl = document.getElementById("resultMessage");
 const donButton = document.getElementById("donButton");
 const kaButton = document.getElementById("kaButton");
+const stageWrap = document.querySelector(".stage-wrap");
 
-const laneY = 230;
+const laneY = 248;
 const hitX = 176;
 const spawnX = 1040;
 const travelTime = 2250;
@@ -145,6 +146,11 @@ function playTone(kind) {
 }
 
 async function startGame() {
+  if (requiresLandscape()) {
+    setFeedback("Vänd skärmen", "#f7b829");
+    return;
+  }
+
   ensureAudio();
   cancelAnimationFrame(animationFrame);
   songAudio.pause();
@@ -171,6 +177,7 @@ async function startGame() {
   setFeedback(activeSong.phrase, "#f7b829");
   updateHud();
   updateSongStatus(0);
+  focusStageForTouch();
 
   songAudio.load();
   songAudio.currentTime = 0;
@@ -400,41 +407,23 @@ function drawBackground(t) {
   }
 
   ctx.fillStyle = "rgba(0, 0, 0, 0.46)";
-  ctx.fillRect(0, 350, canvas.width, 80);
+  ctx.fillRect(0, 382, canvas.width, 78);
   ctx.fillStyle = "rgba(255, 239, 197, 0.74)";
   for (let x = 38; x < canvas.width; x += 92) {
-    ctx.fillRect(x, 360 + Math.sin((t + x) / 280) * 7, 40, 50);
+    ctx.fillRect(x, 392 + Math.sin((t + x) / 280) * 7, 40, 50);
   }
-
-  drawRoomShelf(t);
-}
-
-function drawRoomShelf(t) {
-  ctx.save();
-  ctx.globalAlpha = 0.58;
-  ctx.fillStyle = "#05090e";
-  ctx.fillRect(696, 44, 278, 96);
-  ctx.fillStyle = "#ffefc5";
-  for (let i = 0; i < 9; i += 1) {
-    ctx.fillRect(714 + i * 27, 62 + (i % 3) * 8, 14, 58 - (i % 2) * 12);
-  }
-  ctx.fillStyle = "#2f6539";
-  ctx.beginPath();
-  ctx.ellipse(1000, 118 + Math.sin(t / 300) * 2, 22, 42, -0.25, 0, Math.PI * 2);
-  ctx.fill();
-  ctx.restore();
 }
 
 function drawLane() {
-  roundRect(92, 142, 930, 176, 28, "rgba(255, 239, 197, 0.12)", "rgba(255, 239, 197, 0.38)", 4);
-  roundRect(132, 184, 850, 92, 22, "rgba(0, 0, 0, 0.72)", "rgba(255, 186, 39, 0.58)", 3);
+  roundRect(92, 132, 930, 214, 30, "rgba(255, 239, 197, 0.12)", "rgba(255, 239, 197, 0.42)", 4);
+  roundRect(132, 190, 850, 112, 24, "rgba(0, 0, 0, 0.74)", "rgba(255, 186, 39, 0.62)", 3);
 
   ctx.strokeStyle = "rgba(247, 184, 41, 0.34)";
   ctx.lineWidth = 2;
   for (let x = hitX; x < 982; x += 86) {
     ctx.beginPath();
-    ctx.moveTo(x, 188);
-    ctx.lineTo(x, 272);
+    ctx.moveTo(x, 194);
+    ctx.lineTo(x, 298);
     ctx.stroke();
   }
 }
@@ -443,20 +432,21 @@ function drawHitTarget(now) {
   const flash = Math.max(lastInputFlash.don, lastInputFlash.ka);
   const age = now - flash;
   const glow = age < 160 ? 1 - age / 160 : 0;
+  const size = getNoteVisualSize();
   ctx.save();
   ctx.translate(hitX, laneY);
   ctx.strokeStyle = `rgba(247, 184, 41, ${0.62 + glow * 0.35})`;
   ctx.lineWidth = 6 + glow * 5;
   ctx.beginPath();
-  ctx.arc(0, 0, 49 + glow * 10, 0, Math.PI * 2);
+  ctx.arc(0, 0, size.target + glow * 10, 0, Math.PI * 2);
   ctx.stroke();
   ctx.strokeStyle = "rgba(255, 239, 197, 0.9)";
   ctx.lineWidth = 3;
   ctx.beginPath();
-  ctx.arc(0, 0, 31, 0, Math.PI * 2);
+  ctx.arc(0, 0, size.innerTarget, 0, Math.PI * 2);
   ctx.stroke();
   ctx.fillStyle = "rgba(247, 184, 41, 0.16)";
-  ctx.fillRect(-2, -72, 4, 144);
+  ctx.fillRect(-2, -86, 4, 172);
   ctx.restore();
 }
 
@@ -471,6 +461,7 @@ function drawNotes(t) {
 }
 
 function drawNote(x, y, type, timingDiff) {
+  const size = getNoteVisualSize();
   const color = type === "don" ? "#e95b25" : "#37b5c3";
   const eye = "#20160d";
   const near = timingDiff < goodWindow;
@@ -482,33 +473,55 @@ function drawNote(x, y, type, timingDiff) {
   ctx.lineWidth = 4;
   ctx.fillStyle = "#ffefc5";
   ctx.beginPath();
-  ctx.arc(0, 0, 31, 0, Math.PI * 2);
+  ctx.arc(0, 0, size.outer, 0, Math.PI * 2);
   ctx.fill();
   ctx.stroke();
   ctx.fillStyle = color;
   ctx.beginPath();
-  ctx.arc(0, 0, 23, 0, Math.PI * 2);
+  ctx.arc(0, 0, size.inner, 0, Math.PI * 2);
   ctx.fill();
   ctx.strokeStyle = type === "don" ? "#9b2c1b" : "#0b6482";
   ctx.lineWidth = 3;
   ctx.stroke();
   ctx.fillStyle = eye;
   ctx.beginPath();
-  ctx.arc(-8, -4, 3.2, 0, Math.PI * 2);
-  ctx.arc(8, -4, 3.2, 0, Math.PI * 2);
+  ctx.arc(-size.eyeOffset, -5, size.eye, 0, Math.PI * 2);
+  ctx.arc(size.eyeOffset, -5, size.eye, 0, Math.PI * 2);
   ctx.fill();
   ctx.strokeStyle = eye;
   ctx.lineWidth = 2;
   ctx.beginPath();
-  ctx.arc(0, 3, 8, 0.1, Math.PI - 0.1);
+  ctx.arc(0, 4, size.mouth, 0.1, Math.PI - 0.1);
   ctx.stroke();
   ctx.restore();
+}
+
+function getNoteVisualSize() {
+  if (window.innerWidth <= 620) {
+    return { outer: 44, inner: 33, target: 68, innerTarget: 39, eye: 4.1, eyeOffset: 11, mouth: 11 };
+  }
+  if (window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 900) {
+    return { outer: 38, inner: 29, target: 60, innerTarget: 35, eye: 3.6, eyeOffset: 10, mouth: 10 };
+  }
+  return { outer: 33, inner: 25, target: 53, innerTarget: 33, eye: 3.4, eyeOffset: 9, mouth: 9 };
+}
+
+function focusStageForTouch() {
+  const touchLayout = window.matchMedia("(pointer: coarse)").matches || window.innerWidth <= 780;
+  if (!touchLayout) return;
+  requestAnimationFrame(() => {
+    stageWrap.scrollIntoView({ block: "center", behavior: "smooth" });
+  });
+}
+
+function requiresLandscape() {
+  return window.matchMedia("(pointer: coarse)").matches && window.matchMedia("(orientation: portrait)").matches;
 }
 
 function drawBjorn(now) {
   const bounce = Math.sin(now / 155) * 5;
   ctx.save();
-  ctx.translate(76, laneY + 71 + bounce);
+  ctx.translate(76, laneY + 75 + bounce);
   ctx.fillStyle = "#20160d";
   ctx.globalAlpha = 0.26;
   ctx.beginPath();
@@ -552,7 +565,8 @@ function drawMenuHint() {
   ctx.fillStyle = "rgba(255, 239, 197, 0.94)";
   ctx.font = "900 22px system-ui, sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("Välj låt, starta och spela F / J", 509, 78);
+  const hint = window.matchMedia("(pointer: coarse)").matches ? "Starta och tryck vänster / höger" : "Välj låt, starta och spela F / J";
+  ctx.fillText(hint, 509, 78);
   ctx.restore();
 }
 
@@ -590,6 +604,7 @@ function roundRect(x, y, width, height, radius, fill, stroke, lineWidth) {
 }
 
 document.addEventListener("keydown", (event) => {
+  if (event.repeat) return;
   const key = event.key.toLowerCase();
   if (key === "f") handleHit("don");
   if (key === "j") handleHit("ka");
@@ -603,9 +618,24 @@ songSelect.addEventListener("change", () => {
   draw(0, performance.now());
 });
 
-donButton.addEventListener("click", () => handleHit("don"));
-kaButton.addEventListener("click", () => handleHit("ka"));
+function bindTouchHit(button, type) {
+  button.addEventListener(
+    "pointerdown",
+    (event) => {
+      event.preventDefault();
+      handleHit(type);
+    },
+    { passive: false },
+  );
+}
+
+bindTouchHit(donButton, "don");
+bindTouchHit(kaButton, "ka");
 startButton.addEventListener("click", startGame);
+
+window.addEventListener("resize", () => {
+  draw(running ? currentSongTime(performance.now()) : 0, performance.now());
+});
 
 window.bjornDebug = {
   getState: () => ({

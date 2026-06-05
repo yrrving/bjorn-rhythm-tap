@@ -1,0 +1,8 @@
+.DS_Store
+*.log
+
+# Original/local source files that are not needed for the published demo.
+tiko_graph.png
+bjorn_graph.png
+songs/*.wav
+!songs/bjorn-tune.wav

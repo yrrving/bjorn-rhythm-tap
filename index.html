@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Björn Rhythm Tap</title>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    <main class="app">
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">Björn-baserat rytmspel demo</p>
+          <img class="game-logo" src="sprites/logo.png?v=graph-clean-2" alt="Björn Rhythm Tap">
+          <p class="tagline">Spela Björn Tune. F är röd mitt-träff, J är turkos kant-träff.</p>
+        </div>
+        <div class="hero-actions">
+          <button id="startButton" class="primary-button" type="button">Starta låten</button>
+          <label class="select-label">
+            Låt
+            <select id="songSelect">
+              <option value="bjorn-tune">Björn Tune</option>
+            </select>
+          </label>
+          <label class="select-label">
+            Svårighet
+            <select id="difficultySelect">
+              <option value="easy">Easy</option>
+              <option value="normal" selected>Normal</option>
+              <option value="hard">Hard</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <section class="hud" aria-label="Spelstatus">
+        <div>
+          <span>Score</span>
+          <strong id="score">0</strong>
+        </div>
+        <div>
+          <span>Combo</span>
+          <strong id="combo">0</strong>
+        </div>
+        <div>
+          <span>Misses</span>
+          <strong id="misses">0</strong>
+        </div>
+        <div>
+          <span>Timing</span>
+          <strong id="feedback">Redo</strong>
+        </div>
+      </section>
+
+      <section class="song-status" aria-label="Låtstatus">
+        <div class="song-title" id="songTitle">Björn Tune</div>
+        <div class="progress-track" aria-hidden="true">
+          <div id="songProgress"></div>
+        </div>
+        <div class="song-time" id="songTime">0:00 / 1:58</div>
+      </section>
+
+      <section class="stage-wrap" aria-label="Spelvy">
+        <canvas id="gameCanvas" width="1100" height="430"></canvas>
+        <article class="panel results-panel" id="resultsPanel" hidden>
+          <h2>Resultat</h2>
+          <dl>
+            <div>
+              <dt>Score</dt>
+              <dd id="finalScore">0</dd>
+            </div>
+            <div>
+              <dt>Max combo</dt>
+              <dd id="finalCombo">0</dd>
+            </div>
+            <div>
+              <dt>Missar</dt>
+              <dd id="finalMisses">0</dd>
+            </div>
+          </dl>
+          <p id="resultMessage">Starta igen när du vill slå din score.</p>
+        </article>
+        <div class="key-row">
+          <button class="key-card red" id="donButton" type="button" aria-label="Mittslag med F">
+            <span>F</span>
+            <strong>Röd / mittslag</strong>
+          </button>
+          <button class="key-card cyan" id="kaButton" type="button" aria-label="Kantslag med J">
+            <span>J</span>
+            <strong>Turkos / kantslag</strong>
+          </button>
+        </div>
+      </section>
+    </main>
+
+    <script src="script.js?v=graph-clean-3"></script>
+  </body>
+</html>
